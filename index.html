@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+  <link rel="stylesheet" href="style.css">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Awesome Website</title>
+  
+  <!-- Link your CSS file here -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Optional: Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+
+  <!-- Optional: Favicon -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+  
+  <header>
+    <h1>Welcome to My Website</h1>
+    <p>This is a starter template. Edit and add your content!</p>
+  </header>
+
+  <main>
+    <!-- Your main content goes here -->
+  </main>
+
+  <footer>
+    <p>© 2026 My Awesome Website</p>
+  </footer>
+
+  <!-- Optional: Link your JavaScript file here -->
+  <script src="script.js"></script>
+</body>
+</html>
+<main>
+  <!-- About Section -->
+  <section id="about" style="margin-bottom: 40px;">
+    <h2>About Me</h2>
+    <p>Hey! Welcome to my website. Here you can add info about yourself, your projects, or anything cool you want to show off.</p>
+  </section>
+
+  <!-- Services / Features Section -->
+  <section id="services" style="margin-bottom: 40px;">
+    <h2>What I Do</h2>
+    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 200px; background-color: #3e3e5f; padding: 20px; border-radius: 10px;">
+        <h3>Web Design</h3>
+        <p>I create clean and modern websites.</p>
+        <button>Learn More</button>
+      </div>
+      <div style="flex: 1; min-width: 200px; background-color: #3e3e5f; padding: 20px; border-radius: 10px;">
+        <h3>Game Development</h3>
+        <p>Building fun games and interactive experiences.</p>
+        <button>Check it Out</button>
+      </div>
+      <div style="flex: 1; min-width: 200px; background-color: #3e3e5f; padding: 20px; border-radius: 10px;">
+        <h3>Other Projects</h3>
+        <p>Side projects, coding experiments, and more.</p>
+        <button>Explore</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact">
+    <h2>Contact Me</h2>
+    <p>If you want to reach me, just click the button below!</p>
+    <button onclick="alert('Hey! You clicked the contact button 😎')">Contact</button>
+  </section>
+</main>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+ integrity="sha256-sA+e2M2oZ28vrT7b3JhUjvL3PzptJzM8tP1E2Jk3f9o=" crossorigin=""/>
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Control Dashboard</title>
+
+  <!-- Styles & Leaflet -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&display=swap">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Roboto', sans-serif; }
+    body { background:#1e1e2f; color:#fff; padding:20px; }
+    header { text-align:center; padding:50px 0; background:linear-gradient(90deg, #ff7f50, #ff1493); border-radius:10px; margin-bottom:30px; }
+    main { max-width:900px; margin:0 auto; padding:20px; background:#2e2e3f; border-radius:10px; }
+    footer { text-align:center; margin-top:30px; font-size:0.9rem; color:#bbbbbb; }
+    button { background-color:#ff1493; color:white; padding:10px 20px; border:none; border-radius:6px; cursor:pointer; transition:0.3s; }
+    button:hover { background-color:#ff7f50; }
+    input, select { padding:6px 10px; border-radius:6px; border:none; margin-right:10px; }
+    section { margin-bottom:40px; }
+    #gameMap { height:500px; border-radius:10px; margin-bottom:15px; }
+    .team-controls { margin-bottom:10px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Game Control Dashboard</h1>
+  <p>Add Teams, Players & Manage Map Live!</p>
+</header>
+
+<main>
+  <!-- Map Section -->
+  <section id="mapSection">
+    <h2>Game Map</h2>
+    <div id="gameMap"></div>
+
+    <div class="team-controls">
+      <label for="teamName">Team Name:</label>
+      <input type="text" id="teamName" value="Red Team">
+      <label for="teamColor">Color:</label>
+      <input type="color" id="teamColor" value="#ff0000">
+      <button onclick="addTeam()">Add Team</button>
+    </div>
+
+    <div class="team-controls">
+      <label for="numPlayers">Players per Team:</label>
+      <input type="number" id="numPlayers" value="3" min="1" max="20">
+      <button onclick="updatePlayers()">Update Players</button>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>© 2026 Game Dashboard</p>
+</footer>
+
+<!-- Leaflet & Script -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  // Initialize map
+  var map = L.map('gameMap').setView([20,0],2);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:18, attribution:'© OpenStreetMap'}).addTo(map);
+
+  var teams = {}; // store layers for each team
+  var overlayMaps = {};
+
+  function addTeam() {
+    var name = document.getElementById('teamName').value || "Team";
+    var color = document.getElementById('teamColor').value || "#ff0000";
+
+    // create new layer group for team
+    if (teams[name]) {
+      alert("Team already exists!");
+      return;
+    }
+    teams[name] = L.layerGroup().addTo(map);
+
+    // store layer in overlayMaps for control toggle
+    overlayMaps[name] = teams[name];
+    L.control.layers(null, overlayMaps, {collapsed:false}).addTo(map);
+
+    // Add players for this team immediately
+    updatePlayers();
+  }
+
+  function updatePlayers() {
+    var num = parseInt(document.getElementById('numPlayers').value) || 1;
+
+    for (var teamName in teams) {
+      var layer = teams[teamName];
+      layer.clearLayers(); // clear old markers
+
+      for (var i=0;i<num;i++) {
+        // Random position for demo purposes
+        var lat = Math.random()*50 - 25; // -25 to +25
+        var lng = Math.random()*80 - 40; // -40 to +40
+        L.circleMarker([lat,lng], {
+          radius:8,
+          color: document.getElementById('teamColor').value,
+          fillOpacity:1
+        }).bindPopup(teamName + " Player " + (i+1)).addTo(layer);
+      }
+    }
+  }
+</script>
+
+</body>
+</html>
+<section id="teams">
+  <h2>Teams Control</h2>
+
+  <!-- Taggers Controls -->
+  <div class="team-controls">
+    <h3>Taggers (Red)</h3>
+    <label for="numTaggers">Players:</label>
+    <input type="number" id="numTaggers" value="3" min="1" max="20">
+    <button onclick="updateTaggers()">Update Taggers</button>
+  </div>
+
+  <!-- Survivors Controls -->
+  <div class="team-controls">
+    <h3>Survivors (Blue)</h3>
+    <label for="numSurvivors">Players:</label>
+    <input type="number" id="numSurvivors" value="3" min="1" max="20">
+    <button onclick="updateSurvivors()">Update Survivors</button>
+  </div>
+</section>
+
+<script>
+  // Layers for each team
+  var taggers = L.layerGroup().addTo(map);
+  var survivors = L.layerGroup().addTo(map);
+
+  // Toggle layers in Leaflet control
+  var overlayMaps = {
+    "Taggers": taggers,
+    "Survivors": survivors
+  };
+  L.control.layers(null, overlayMaps, {collapsed:false}).addTo(map);
+
+  // Function to update taggers
+  function updateTaggers() {
+    var num = parseInt(document.getElementById('numTaggers').value) || 1;
+    taggers.clearLayers();
+    for (var i = 0; i < num; i++) {
+      var lat = Math.random()*50 - 25;
+      var lng = Math.random()*80 - 40;
+      L.circleMarker([lat,lng], {
+        radius:8,
+        color: "#ff0000",
+        fillOpacity:1
+      }).bindPopup("Tagger " + (i+1)).addTo(taggers);
+    }
+  }
+
+  // Function to update survivors
+  function updateSurvivors() {
+    var num = parseInt(document.getElementById('numSurvivors').value) || 1;
+    survivors.clearLayers();
+    for (var i = 0; i < num; i++) {
+      var lat = Math.random()*50 - 25;
+      var lng = Math.random()*80 - 40;
+      L.circleMarker([lat,lng], {
+        radius:8,
+        color: "#0000ff",
+        fillOpacity:1
+      }).bindPopup("Survivor " + (i+1)).addTo(survivors);
+    }
+  }
+</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Dashboard: Taggers & Survivors</title>
+
+  <!-- Leaflet & Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&display=swap">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Roboto', sans-serif; }
+    body { background:#1e1e2f; color:#fff; padding:20px; }
+    header { text-align:center; padding:50px 0; background:linear-gradient(90deg, #ff7f50, #ff1493); border-radius:10px; margin-bottom:30px; }
+    main { max-width:900px; margin:0 auto; padding:20px; background:#2e2e3f; border-radius:10px; }
+    footer { text-align:center; margin-top:30px; font-size:0.9rem; color:#bbbbbb; }
+    button { background-color:#ff1493; color:white; padding:10px 20px; border:none; border-radius:6px; cursor:pointer; transition:0.3s; }
+    button:hover { background-color:#ff7f50; }
+    input { padding:6px 10px; border-radius:6px; border:none; margin-right:10px; }
+    section { margin-bottom:40px; }
+    #gameMap { height:500px; border-radius:10px; margin-bottom:15px; }
+    .team-controls { margin-bottom:20px; }
+    h2 { margin-bottom:15px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Game Dashboard</h1>
+  <p>Control Taggers & Survivors live on the map!</p>
+</header>
+
+<main>
+  <!-- Map Section -->
+  <section id="mapSection">
+    <h2>Game Map</h2>
+    <div id="gameMap"></div>
+  </section>
+
+  <!-- Teams Controls Section -->
+  <section id="teams">
+    <h2>Teams Control</h2>
+
+    <!-- Taggers Controls -->
+    <div class="team-controls">
+      <h3>Taggers (Red)</h3>
+      <label for="numTaggers">Players:</label>
+      <input type="number" id="numTaggers" value="3" min="1" max="20">
+      <button onclick="updateTaggers()">Update Taggers</button>
+    </div>
+
+    <!-- Survivors Controls -->
+    <div class="team-controls">
+      <h3>Survivors (Blue)</h3>
+      <label for="numSurvivors">Players:</label>
+      <input type="number" id="numSurvivors" value="3" min="1" max="20">
+      <button onclick="updateSurvivors()">Update Survivors</button>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>© 2026 Game Dashboard</p>
+</footer>
+
+<!-- Leaflet & Script -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  // Initialize map
+  var map = L.map('gameMap').setView([20,0],2);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:18, attribution:'© OpenStreetMap'}).addTo(map);
+
+  // Layers for Taggers and Survivors
+  var taggers = L.layerGroup().addTo(map);
+  var survivors = L.layerGroup().addTo(map);
+
+  // Leaflet layer control
+  var overlayMaps = {
+    "Taggers": taggers,
+    "Survivors": survivors
+  };
+  L.control.layers(null, overlayMaps, {collapsed:false}).addTo(map);
+
+  // Update Taggers
+  function updateTaggers() {
+    var num = parseInt(document.getElementById('numTaggers').value) || 1;
+    taggers.clearLayers();
+    for (var i=0;i<num;i++){
+      var lat = Math.random()*50 - 25;
+      var lng = Math.random()*80 - 40;
+      L.circleMarker([lat,lng], {radius:8, color:"#ff0000", fillOpacity:1})
+        .bindPopup("Tagger " + (i+1))
+        .addTo(taggers);
+    }
+  }
+
+  // Update Survivors
+  function updateSurvivors() {
+    var num = parseInt(document.getElementById('numSurvivors').value) || 1;
+    survivors.clearLayers();
+    for (var i=0;i<num;i++){
+      var lat = Math.random()*50 - 25;
+      var lng = Math.random()*80 - 40;
+      L.circleMarker([lat,lng], {radius:8, color:"#0000ff", fillOpacity:1})
+        .bindPopup("Survivor " + (i+1))
+        .addTo(survivors);
+    }
+  }
+</script>
+
+</body>
+</html>
+<!-- Next Phase Section -->
+<section id="nextPhase" style="margin-top:30px;">
+  <button id="nextButton" onclick="showCityInput()">Next</button>
+
+  <div id="cityInputDiv" style="display:none; margin-top:15px;">
+    <label for="cityName">Enter City Name:</label>
+    <input type="text" id="cityName" placeholder="e.g., New York">
+    <button onclick="goToCity()">Go</button>
+  </div>
+</section>
+
+<script>
+  function showCityInput() {
+    document.getElementById('cityInputDiv').style.display = 'block';
+  }
+
+  function goToCity() {
+    var city = document.getElementById('cityName').value;
+    if (!city) { alert("Please enter a city name!"); return; }
+
+    // Use OpenStreetMap Nominatim API to get city coordinates
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${city}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          var lat = parseFloat(data[0].lat);
+          var lon = parseFloat(data[0].lon);
+          map.setView([lat, lon], 13); // Zoom in to city
+          alert(city + " is now the safe zone!");
+        } else {
+          alert("City not found. Try again!");
+        }
+      })
+      .catch(err => alert("Error finding city: " + err));
+  }
+</script>
+<div id="new-server">
+  <h2>Create New Server</h2>
+  
+  <label>Server Name:</label>
+  <input type="text" id="serverName" placeholder="Enter server name">
+
+  <label>Number of Survivors:</label>
+  <input type="number" id="survivorsCount" min="1" value="1">
+
+  <label>Number of Taggers:</label>
+  <input type="number" id="taggersCount" min="1" value="1">
+
+  <label>Password (optional):</label>
+  <input type="password" id="serverPassword" placeholder="Enter password">
+
+  <button onclick="createServer()">Create Server</button>
+</div>
+
+<div id="serverInfo"></div>
+
+<script>
+function createServer() {
+  const name = document.getElementById('serverName').value;
+  const survivors = parseInt(document.getElementById('survivorsCount').value);
+  const taggers = parseInt(document.getElementById('taggersCount').value);
+  const password = document.getElementById('serverPassword').value;
+
+  if(!name) {
+    alert("Bro, you gotta put a server name!");
+    return;
+  }
+
+  const server = {
+    name,
+    survivors,
+    taggers,
+    password: password || null
+  };
+
+  // Show server info on the page
+  let info = `<h3>Server Created!</h3>
+              <p>Name: ${server.name}</p>
+              <p>Survivors: ${server.survivors}</p>
+              <p>Taggers: ${server.taggers}</p>
+              <p>Password Protected: ${server.password ? "Yes" : "No"}</p>`;
+  
+  document.getElementById('serverInfo').innerHTML = info;
+
+  console.log("Server Object:", server);
+}
+</script>
+<div id="new-server">
+  <h2>Create New Server</h2>
+  
+  <label>Server Name:</label>
+  <input type="text" id="serverName" placeholder="Enter server name">
+
+  <label>Number of Survivors:</label>
+  <input type="number" id="survivorsCount" min="1" value="1">
+
+  <label>Number of Taggers:</label>
+  <input type="number" id="taggersCount" min="1" value="1">
+
+  <label>Password (optional):</label>
+  <input type="password" id="serverPassword" placeholder="Enter password">
+
+  <button onclick="createServer()">Create Server</button>
+</div>
+
+<h2>Available Servers</h2>
+<div id="serverList"></div>
+
+<script>
+let servers = [];
+
+function createServer() {
+  const name = document.getElementById('serverName').value;
+  const survivors = parseInt(document.getElementById('survivorsCount').value);
+  const taggers = parseInt(document.getElementById('taggersCount').value);
+  const password = document.getElementById('serverPassword').value;
+
+  if(!name) {
+    alert("Bro, you gotta put a server name!");
+    return;
+  }
+
+  const server = {
+    id: Date.now(), // unique id
+    name,
+    survivors,
+    taggers,
+    password: password || null
+  };
+
+  servers.push(server);
+  renderServers();
+
+  // Reset inputs
+  document.getElementById('serverName').value = '';
+  document.getElementById('survivorsCount').value = 1;
+  document.getElementById('taggersCount').value = 1;
+  document.getElementById('serverPassword').value = '';
+}
+
+function renderServers() {
+  const listDiv = document.getElementById('serverList');
+  listDiv.innerHTML = '';
+
+  servers.forEach(server => {
+    const div = document.createElement('div');
+    div.style.border = "1px solid red";
+    div.style.margin = "5px";
+    div.style.padding = "5px";
+
+    let html = `<strong>${server.name}</strong> | Survivors: ${server.survivors} | Taggers: ${server.taggers} | Password: ${server.password ? "Yes" : "No"}<br>`;
+
+    if(server.password) {
+      html += `<input type="password" id="joinPassword-${server.id}" placeholder="Enter password">
+               <button onclick="joinServer(${server.id})">Join Server</button>`;
+    } else {
+      html += `<button onclick="joinServer(${server.id})">Join Server</button>`;
+    }
+
+    div.innerHTML = html;
+    listDiv.appendChild(div);
+  });
+}
+
+function joinServer(id) {
+  const server = servers.find(s => s.id === id);
+  if(server.password) {
+    const inputPass = document.getElementById(`joinPassword-${id}`).value;
+    if(inputPass !== server.password) {
+      alert("Wrong password bro! ❌");
+      return;
+    }
+  }
+  alert(`Joined server: ${server.name} ✅`);
+}
+</script>
+<div id="new-server">
+  <h2>Create New Server</h2>
+  
+  <label>Server Name:</label>
+  <input type="text" id="serverName" placeholder="Enter server name">
+
+  <label>Number of Survivors:</label>
+  <input type="number" id="survivorsCount" min="1" value="1">
+
+  <label>Number of Taggers:</label>
+  <input type="number" id="taggersCount" min="1" value="1">
+
+  <label>Password (optional):</label>
+  <input type="password" id="serverPassword" placeholder="Enter password">
+
+  <button onclick="createServer()">Create Server</button>
+</div>
+
+<h2>Available Servers</h2>
+<div id="serverList"></div>
+
+<div id="gameScreen"></div>
+
+<script>
+let servers = [];
+let playersCoins = {}; // track coins for all players (key = name/id)
+
+function createServer() {
+  const name = document.getElementById('serverName').value;
+  const survivors = parseInt(document.getElementById('survivorsCount').value);
+  const taggers = parseInt(document.getElementById('taggersCount').value);
+  const password = document.getElementById('serverPassword').value;
+
+  if(!name) {
+    alert("Bro, you gotta put a server name!");
+    return;
+  }
+
+  const server = {
+    id: Date.now(),
+    name,
+    survivors: Array.from({length: survivors}, (_, i) => ({name: `Survivor${i+1}`, caught: false})),
+    taggers: Array.from({length: taggers}, (_, i) => ({name: `Tagger${i+1}`, caughtSurvivors: 0})),
+    password: password || null,
+    started: false
+  };
+
+  // init coins
+  server.survivors.forEach(s => playersCoins[s.name] = 0);
+  server.taggers.forEach(t => playersCoins[t.name] = 0);
+
+  servers.push(server);
+  renderServers();
+
+  // Reset inputs
+  document.getElementById('serverName').value = '';
+  document.getElementById('survivorsCount').value = 1;
+  document.getElementById('taggersCount').value = 1;
+  document.getElementById('serverPassword').value = '';
+}
+
+function renderServers() {
+  const listDiv = document.getElementById('serverList');
+  listDiv.innerHTML = '';
+
+  servers.forEach(server => {
+    const div = document.createElement('div');
+    div.style.border = "1px solid red";
+    div.style.margin = "5px";
+    div.style.padding = "5px";
+
+    let html = `<strong>${server.name}</strong> | Survivors: ${server.survivors.length} | Taggers: ${server.taggers.length} | Password: ${server.password ? "Yes" : "No"}<br>`;
+    
+    if(!server.started) {
+      html += `<button onclick="startGame(${server.id})">Start Game</button>`;
+    } else {
+      html += `<em>Game Started</em>`;
+    }
+
+    div.innerHTML = html;
+    listDiv.appendChild(div);
+  });
+}
+
+function startGame(id) {
+  const server = servers.find(s => s.id === id);
+  server.started = true;
+
+  const gameDiv = document.getElementById('gameScreen');
+  gameDiv.innerHTML = `<h2>Game: ${server.name}</h2>`;
+
+  // Survivors list
+  let survivorsHTML = `<h3>Survivors</h3>`;
+  server.survivors.forEach(s => {
+    survivorsHTML += `<div id="${s.name}">${s.name} - Caught: ${s.caught}</div>`;
+  });
+
+  // Taggers buttons to kill survivors
+  let taggersHTML = `<h3>Taggers</h3>`;
+  server.taggers.forEach(t => {
+    taggersHTML += `<div>${t.name}<br>`;
+    server.survivors.forEach(s => {
+      if(!s.caught) {
+        taggersHTML += `<button onclick="killSurvivor('${server.id}','${s.name}','${t.name}')">Killed ${s.name}</button> `;
+      }
+    });
+    taggersHTML += `</div>`;
+  });
+
+  // Win buttons
+  let winButtons = `<br><button onclick="survivorsWin(${server.id})">Survivors Win</button>
+                    <button onclick="taggersWin(${server.id})">Taggers Win</button>`;
+
+  gameDiv.innerHTML += survivorsHTML + taggersHTML + winButtons;
+}
+
+function killSurvivor(serverId, survivorName, taggerName) {
+  const server = servers.find(s => s.id == serverId);
+  const survivor = server.survivors.find(s => s.name === survivorName);
+  const tagger = server.taggers.find(t => t.name === taggerName);
+
+  if(!survivor.caught) {
+    survivor.caught = true;
+    tagger.caughtSurvivors += 1;
+    document.getElementById(survivorName).innerText = `${survivor.name} - Caught: true`;
+  }
+}
+
+function survivorsWin(serverId) {
+  const server = servers.find(s => s.id == serverId);
+  server.survivors.forEach(s => playersCoins[s.name] += 100);
+  server.taggers.forEach(t => playersCoins[t.name] += t.caughtSurvivors * 20);
+  alert("Survivors Win! Coins distributed. Check console for coins.");
+  console.log(playersCoins);
+}
+
+function taggersWin(serverId) {
+  const server = servers.find(s => s.id == serverId);
+  server.taggers.forEach(t => playersCoins[t.name] += 100 + t.caughtSurvivors * 20);
+  alert("Taggers Win! Coins distributed. Check console for coins.");
+  console.log(playersCoins);
+}
+</script>
+<h2>Shop</h2>
+<div id="shop"></div>
+
+<h2>Player Inventory</h2>
+<div id="inventory"></div>
+
+<script>
+// Sample player for testing
+let currentPlayer = 'Survivor1';
+let playerInventory = {}; // key = player name, value = {revive: 0, ghostTool: 0, foolsGem: 0}
+
+// Shop Items
+const shopItems = [
+  {name: 'Revive', cost: 1000, key: 'revive', description: 'Revive yourself if caught.'},
+  {name: 'Ghost Tool', cost: 500, key: 'ghostTool', description: 'Invisible for 30 seconds.'},
+  {name: 'Fool\'s Gem', cost: 300, key: 'foolsGem', description: 'Fake location for 10 seconds.'}
+];
+
+// Initialize inventory
+playerInventory[currentPlayer] = {revive:0, ghostTool:0, foolsGem:0};
+
+// Render shop
+function renderShop() {
+  const shopDiv = document.getElementById('shop');
+  shopDiv.innerHTML = '';
+  shopItems.forEach(item => {
+    let btn = `<button onclick="buyItem('${item.key}', ${item.cost})">Buy ${item.name} (${item.cost} coins)</button>`;
+    shopDiv.innerHTML += `<div>${item.name}: ${item.description} ${btn}</div>`;
+  });
+}
+
+// Buy item function
+function buyItem(itemKey, cost) {
+  if(playersCoins[currentPlayer] >= cost) {
+    playersCoins[currentPlayer] -= cost;
+    playerInventory[currentPlayer][itemKey] += 1;
+    alert(`Bought ${itemKey}! You now have ${playerInventory[currentPlayer][itemKey]}`);
+    renderInventory();
+    console.log(playersCoins);
+  } else {
+    alert("Not enough coins bro! 💸");
+  }
+}
+
+// Render inventory
+function renderInventory() {
+  const invDiv = document.getElementById('inventory');
+  invDiv.innerHTML = '';
+  const inv = playerInventory[currentPlayer];
+  for(let key in inv) {
+    invDiv.innerHTML += `<div>${key}: ${inv[key]}</div>`;
+  }
+}
+
+// Initial render
+renderShop();
+renderInventory();
+</script>
+let survivorsHTML = `<h3>Survivors</h3>`;
+server.survivors.forEach(s => {
+  survivorsHTML += `
+    <div id="${s.name}">
+      ${s.name} - Caught: ${s.caught} 
+      <br>
+      <button onclick="useRevive('${server.id}','${s.name}')">Revive</button>
+      <button onclick="useGhost('${server.id}','${s.name}')">Ghost Tool</button>
+      <button onclick="useFoolsGem('${server.id}','${s.name}')">Fool's Gem</button>
+    </div>
+  `;
+});
+function useRevive(serverId, survivorName) {
+  const server = servers.find(s => s.id == serverId);
+  const survivor = server.survivors.find(s => s.name === survivorName);
+
+  if(playerInventory[survivorName]?.revive > 0 && survivor.caught) {
+    survivor.caught = false;
+    playerInventory[survivorName].revive -= 1;
+    document.getElementById(survivorName).innerText = `${survivor.name} - Caught: false`;
+    alert(`${survivor.name} revived! 💚`);
+  } else {
+    alert("No revive or not caught bro ❌");
+  }
+}
+
+function useGhost(serverId, survivorName) {
+  if(playerInventory[survivorName]?.ghostTool > 0) {
+    playerInventory[survivorName].ghostTool -= 1;
+    alert(`${survivorName} is invisible for 30 seconds 👻`);
+
+    // simulate effect
+    setTimeout(() => {
+      alert(`${survivorName} is visible again`);
+    }, 30000);
+  } else {
+    alert("No ghost tool bro ❌");
+  }
+}
+
+function useFoolsGem(serverId, survivorName) {
+  if(playerInventory[survivorName]?.foolsGem > 0) {
+    playerInventory[survivorName].foolsGem -= 1;
+    alert(`${survivorName} activated fake location for 10 seconds 🧠`);
+
+    setTimeout(() => {
+      alert(`${survivorName}'s real location restored`);
+    }, 10000);
+  } else {
+    alert("No Fool's Gem bro ❌");
+  }
+}
+server.survivors.forEach(s => {
+  playersCoins[s.name] = 0;
+  playerInventory[s.name] = {revive:0, ghostTool:0, foolsGem:0};
+});
+function startCountdown(serverId) {
+  let countdown = 60; // seconds
+  const timerDiv = document.createElement('div');
+  timerDiv.id = 'countdownTimer';
+  document.getElementById('gameScreen').appendChild(timerDiv);
+
+  const interval = setInterval(() => {
+    timerDiv.innerText = `Survivor spread time: ${countdown}s`;
+    countdown--;
+
+    if(countdown < 0) {
+      clearInterval(interval);
+      timerDiv.innerText = "Taggers can start now! 🔥";
+      startMapTracking(serverId); // call map tracking function
+    }
+  }, 1000);
+}
